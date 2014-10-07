@@ -1,26 +1,10 @@
-require 'tweetstream'
-
 class TweetsController < ApplicationController
   before_action :set_tweet, only: [:show, :edit, :update, :destroy]
+  before_action :load_tweets, only: :index
 
   # GET /tweets
   # GET /tweets.json
   def index
-
-    # TweetStream.configure do |config|
-    #   config.consumer_key       = 'T0KVGd4LFAVrhbIybKMASOPqg'
-    #   config.consumer_secret    = 'hZPc2kVgc5WywHqHQ3dJtlzkCmTS7YWByerDnSYOFHIkqcmxFC'
-    #   config.oauth_token        = '1229972551-2PBnleMK6uuzySrXbUkFO4UcNbc0SMgQXt1j7Qi'
-    #   config.oauth_token_secret = 'dpl02FjuSPeYlIiOaP8yV3TB31XCeulqiEtxvydGu2N4J'
-    #   config.auth_method        = :oauth
-    # end
-
-    # @tweet = TweetStream::Client.new
-    # # binding.pry
-
-    # @tweet.userstream do |status|
-    #   puts status.text
-    # end
     @tweets = Tweet.all
   end
 
@@ -87,5 +71,15 @@ class TweetsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def tweet_params
       params[:tweet]
+    end
+
+    def load_tweets
+      TweetStream::Client.new.track('Pink Floyd') do |status|
+        if Tweet.count > 2
+          break
+        else
+          Tweet.create(:text => status.text, user: status.user)
+        end
+      end
     end
 end
