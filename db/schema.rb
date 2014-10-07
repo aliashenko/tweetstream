@@ -11,9 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141003142349) do
+ActiveRecord::Schema.define(version: 20141006153730) do
 
   create_table "tweets", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "text"
+    t.string   "screen_name"
+    t.integer  "tweet_id",         limit: 8
+    t.datetime "tweet_created_at"
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "screen_name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
